@@ -1,6 +1,7 @@
 package POS_v2;
 
 import POS_v2.domainLayer.*;
+import POS_v2.presentaionLayer.*;
 
 public class Main {
 
@@ -10,7 +11,7 @@ public class Main {
 		Register register = store.getRegister();
 		
 		//컨트롤러를  GUI에게 전달
-		new ProcessSaleFrame(register);
+		new ProcessSaleJFrame(register);
 	}
 
 }
