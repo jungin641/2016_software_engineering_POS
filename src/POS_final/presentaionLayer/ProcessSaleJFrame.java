@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import POS_v2.domainLayer.*;
+import POS_final.domainLayer.*;
 
 public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	
