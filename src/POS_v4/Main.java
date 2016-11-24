@@ -1,10 +1,7 @@
-package POS_final;
+package POS_v4;
 
-import POS_final.domainLayer.Register;
-import POS_final.domainLayer.Store;
-import POS_final.presentaionLayer.ProcessSaleJFrame;
-
-//import POS_final.*;
+import POS_v4.domainLayer.*;
+import POS_v4.presentaionLayer.ProcessSaleJFrame;
 
 public class Main {
 
