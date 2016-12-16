@@ -129,13 +129,13 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	public void actionPerformed (ActionEvent event){
 		
 			if(event.getSource() == jbutton_makeNewSale ){
-				System.out.println("makenewSale 버튼이 눌러�볼慧求�");
+				System.out.println("makenewSale 버튼이 눌러졌습니다");
 			//컨트롤러에게 메시지 전달
 				sale = register.makeNewSale();
 			}	
 			else if(event.getSource() == jbutton_enterItem){
 
-				System.out.println("enterItem 버튼이 눌러�볼慧求�");;
+				System.out.println("enterItem 버튼이 눌러졌습니다");;
 				register.enterItem(
 						new ItemID(Integer.parseInt(jTextFiel_itemID.getText())) 
 								, Integer.parseInt(jTextFiel_quantiy.getText())
@@ -146,7 +146,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 				jTextFiel_total.setText("" + sale.getTotal());
 			}
 			else if(event.getSource() == jbutton_endSale){
-				System.out.println("endSale 버튼이 눌러�볼慧求�");;
+				System.out.println("endSale 버튼이 눌러졌습니다");;
 				//컨트롤러에게 메시지 전달
 				register.endSale();
 				
