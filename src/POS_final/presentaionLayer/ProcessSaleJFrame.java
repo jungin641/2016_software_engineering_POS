@@ -1,107 +1,201 @@
 package POS_final.presentaionLayer;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import POS_final.domainLayer.*;
 
+
 public class ProcessSaleJFrame extends JFrame implements ActionListener{
-	
-	//ÄÁÆ®·Ñ·¯
+	private static final Insets insets = new Insets(0, 0, 0, 0);
+	//ì»¨íŠ¸ë¡¤ëŸ¬
 	private Register register;
 	
-	//ÇöÀç ÆÇ¸Å °´Ã¼
+	//í˜„ì¬ íŒë§¤ ê°ì²´
 	private Sale sale;
-	//GUIÄÄÇ»³ÍÆ® ¼±¾ğ
-	//1. for makenewSale()
-	private JButton jbutton_makeNewSale = new JButton();
-	private JButton jbutton_enterItem = new JButton();
-	private Container contentPane = getContentPane();
+	//GUIì»´í“¨ë„ŒíŠ¸ ì„ ì–¸
 	
-	//2. for enterItem()
+	
+	//1. for makenewSale()
+	private JButton jbutton_makeNewSale = new JButton("1. makeNewSale");
 	private JLabel jLabel_itemId = new JLabel("item id: ");
 	private JTextField jTextFiel_itemID = new JTextField();
 	private JLabel jLabel_quantiy = new JLabel("quantity: ");
 	private JTextField jTextFiel_quantiy = new JTextField();
+	private JLabel jLabel_description = new JLabel("description: ");
+	private JTextField jTextFiel_description = new JTextField();
+	
+	//2. for enterItem()
+	private JButton jbutton_enterItem = new JButton("2. enterItem() (ë°˜ë³µ)");
+	private JLabel jLabel_currentTotal = new JLabel("Current Total: "); //ì„¸ê¸ˆ ê³„ì‚°í•œ ì´
+	private JTextField jTextFiel_currentTotal = new JTextField();
+
 	
 	//3. for endSale()
 	private JButton jbutton_endSale = new JButton("3. endSale()");
-	private JLabel jLabel_total = new JLabel("total: ");
-	private JTextField jTextFiel_total = new JTextField();
+	private ButtonGroup buttonGroup_tax = new ButtonGroup();
+	private JRadioButton jradioButton_taxMaster = new JRadioButton("TaxMaster", false);
+	private JRadioButton jradioButton_goodAsGoldTaxPro = new JRadioButton("GoodAsGoldTaxPro", false);
+//	buttonGroup_tax.add(jradioButton_goodAsGoldTaxPro);
+//	buttonGroup_tax.add(jradioButton_taxMaster);
 	
-	//4. for makePayment()
-	private JLabel jLabel_cash = new JLabel("cash: "); //°í°´ÀÌ ³½ µ·
-	private JTextField jTextFiel_cash = new JTextField();
-	private JLabel jLabel_balance = new JLabel("balance: "); // ÀÜµ·
-	private JTextField jTextFiel_balance = new JTextField();
+	//4. for calculateTax()
+	private JButton jbutton_calcuateTax = new JButton("4. calcuateTax()");
+	private JLabel jLabel_total_with_tax = new JLabel("Total with Tax: "); //ì„¸ê¸ˆ ê³„ì‚°í•œ ì´
+	private JTextField jTextFiel_total_with_tax = new JTextField();
+	private JRadioButton jradioButton_bestForCustomer = new JRadioButton("BestForCustomer", false);
+	private JRadioButton jradioButton_bestForStore = new JRadioButton("BestForStore", false);
+	private ButtonGroup buttonGroup_discount = new ButtonGroup();
+//	buttonGroup_discount.add(jradioButton_bestForCustomer);
+//	buttonGroup_discount.add(jradioButton_bestForStore);
+	
+	//5. for applyDiscount()
+	private JButton jbutton_applyDiscount = new JButton("5. applyDiscount()");
+	private JLabel jLabel_total_after_discount = new JLabel("Total after Discount: "); //ì„¸ê¸ˆ ê³„ì‚°í•œ ì´
+	private JTextField jTextFiel_total_after_discount = new JTextField();
+	private JLabel jLabel_amount = new JLabel("Amount: "); //ì„¸ê¸ˆ ê³„ì‚°í•œ ì´
+	private JTextField jTextFiel_amount = new JTextField();
 
-	private JButton jbutton_makePayment = new JButton("4. makePayment");
+	//6. for makePayment()
+	private JButton jbutton_makePayment = new JButton("6. makePayment()");
+	private JLabel jLabel_balance = new JLabel("balance: "); // ì”ëˆ
+	private JTextField jTextFiel_balance = new JTextField();
 	
-	//»ı¼ºÀÚ
+	private JTextArea jTextarea_window = new JTextArea();
+	
+	//ìƒì„±ì
 	public ProcessSaleJFrame(Register register){
 		this.register = register;
 		initGUI();
-		pack(); //GUI ÄÄÆ÷³ÍÆ® Á¤¸®
+		pack(); //GUI ì»´í¬ë„ŒíŠ¸ ì •ë¦¬
+		setSize(600,550);
 		setVisible(true);
 	}
-
+	
 	private void initGUI() {
-		//·¹ÀÌ¾Æ¿ô¸Å´ÏÀú ÁöÁ¤
-		contentPane.setLayout(new FlowLayout());
+		GridBagLayout gbl = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+       
+        setTitle("POS System ( í•™ë²ˆ : 20141311 ì´ë¦„ : ìœ ì •ì¸ ) ");
 		
-		//GUIÄÄÇ»³ÍÆ® ¼Ó¼º ÁöÁ¤
+		//ë ˆì´ì•„ì›ƒë§¤ë‹ˆì € ì§€ì •
+        setLayout(gbl);
+		
+		//GUIì»´ë„ŒíŠ¸ ì†ì„± ì§€ì •
 		jTextFiel_itemID.setPreferredSize(new Dimension(60,20));
 		jTextFiel_quantiy.setPreferredSize(new Dimension(60,20));
-
-		jTextFiel_total.setPreferredSize(new Dimension(100,20));
-		jTextFiel_cash.setPreferredSize(new Dimension(60,20));
+		jTextFiel_description.setPreferredSize(new Dimension(60,20));
+		jTextFiel_currentTotal.setPreferredSize(new Dimension(60,20));
+		jTextFiel_total_with_tax.setPreferredSize(new Dimension(60,20));
+		jTextFiel_currentTotal.setPreferredSize(new Dimension(60,20));
+		jTextFiel_total_with_tax.setPreferredSize(new Dimension(60,20));
+		jTextFiel_total_after_discount.setPreferredSize(new Dimension(60,20));
+		jTextFiel_amount.setPreferredSize(new Dimension(60,20));
 		jTextFiel_balance.setPreferredSize(new Dimension(60,20));
-		
-		jbutton_makeNewSale.setLabel("1. makeNewSale");
-		jbutton_enterItem.setLabel("2. enterItem");
+		jTextFiel_balance.setPreferredSize(new Dimension(60,20));
+		jTextarea_window.setPreferredSize(new Dimension (200,400));
 
 		
-		//GUIÄÄÇ»³ÍÆ® Ãß°¡
-		contentPane.add(jbutton_makeNewSale);
-		contentPane.add(jLabel_itemId);
-		contentPane.add(jTextFiel_itemID);
-		contentPane.add(jLabel_quantiy);
-		contentPane.add(jTextFiel_quantiy);
-		contentPane.add(jbutton_enterItem);
-		contentPane.add(jbutton_endSale);
-		contentPane.add(jLabel_total);
-		contentPane.add(jTextFiel_total);
-		contentPane.add(jLabel_cash);
-		contentPane.add(jTextFiel_cash);
-		contentPane.add(jLabel_balance);
-		contentPane.add(jTextFiel_balance);
-		contentPane.add(jbutton_makePayment);
+		//JTextArea ì†ì„± ì§€ì •
+
+		jTextarea_window.setText("Please click makeNewSale.");
+		jTextarea_window.setBorder(BorderFactory.createLoweredBevelBorder()); 
+		jTextarea_window.setEditable(false); // í¸ì§‘ë¶ˆê°€ëŠ¥í•˜ê²Œ í•¨
+
 		
-		//¸®½º³Ê µî·Ï
+		//GUIì»´í“¨ë„ŒíŠ¸ ì¶”ê°€
+	
+		gbAdd(gbl, gbc, jbutton_makeNewSale, 1, 0, 2, 1);
+		gbAdd(gbl, gbc, jLabel_itemId, 2, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_itemID, 2, 1, 1, 1);
+		gbAdd(gbl, gbc, jLabel_quantiy, 3, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_quantiy, 3, 1, 1, 1);
+		gbAdd(gbl, gbc, jLabel_description, 4, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_description, 4, 1, 1, 1);
+		
+		gbAdd(gbl, gbc, jbutton_enterItem, 5, 0, 2, 1);
+		gbAdd(gbl, gbc, jLabel_currentTotal, 6, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_currentTotal, 6, 1, 1, 1);
+		gbAdd(gbl, gbc, jbutton_endSale, 7, 0, 2, 1);
+		gbAdd(gbl, gbc, jradioButton_taxMaster, 8, 0, 1, 1);
+		gbAdd(gbl, gbc, jradioButton_goodAsGoldTaxPro, 8, 1, 1, 1);
+		
+		gbAdd(gbl, gbc, jbutton_calcuateTax, 9, 0, 2, 1);
+		gbAdd(gbl, gbc, jLabel_total_with_tax, 10, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_total_with_tax, 10, 1, 1, 1);
+		gbAdd(gbl, gbc, jradioButton_bestForCustomer, 11, 0, 1, 1);
+		gbAdd(gbl, gbc, jradioButton_bestForStore, 11, 1, 1, 1);
+		
+		gbAdd(gbl, gbc, jbutton_applyDiscount, 12, 0, 2, 1);
+		gbAdd(gbl, gbc, jLabel_total_after_discount, 13, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_total_after_discount, 13, 1, 1, 1);
+		gbAdd(gbl, gbc, jLabel_amount, 14, 0, 1, 1);
+		gbAdd(gbl, gbc, jTextFiel_amount, 14, 1, 1, 1);
+	
+		gbAdd(gbl, gbc, jbutton_makePayment, 15, 0, 2, 1); 
+		gbAdd(gbl, gbc, jLabel_balance, 16, 0, 1, 1); 
+		gbAdd(gbl, gbc, jTextFiel_balance, 16, 1, 1, 1); 
+		
+		gbAdd(gbl, gbc, jTextarea_window, 1, 2, 3, 16); 
+		
+	
+		 
+		
+		
+		//ë¦¬ìŠ¤ë„ˆ ë“±ë¡
 		jbutton_makeNewSale.addActionListener(this);
 		jbutton_enterItem.addActionListener(this);
 		jbutton_endSale.addActionListener(this);
+		jbutton_calcuateTax.addActionListener(this);
+		jbutton_applyDiscount.addActionListener(this);
 		jbutton_makePayment.addActionListener(this);
 	}
+	
+	 private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int x, int y, int w, int h) {
+
+	      gbc.gridy = x;
+	      gbc.gridx = y; 
+	      //ê°€ì¥ ì™¼ìª½ ìœ„ gridx, gridyê°’ì€ 0 
+	      gbc.gridwidth  = w;	//ë„“ì´
+	      gbc.gridheight = h;	//ë†’ì´
+	      //gridwidthë¥¼ GridBagConstraints.REMAINDER ê°’ìœ¼ë¡œ ì„¤ì •í•˜ë©´ í˜„ì¬ í–‰ì˜ ë§ˆì§€ë§‰ ì…€ì´ë˜ê³ , 
+	      //gridheightë¥¼ GridBagConstraints.REMAINDER ê°’ìœ¼ë¡œ ì„¤ì •í•˜ë©´ í˜„ì¬ ì—´ì˜ ë§ˆì§€ë§‰ ì…€ì´ë©ë‹ˆë‹¤. 
+	      //gridwidthë¥¼ GridBagConstraints. RELATIVE ê°’ìœ¼ë¡œ ì„¤ì •í•˜ë©´ í˜„ì¬ í–‰ì˜ ë‹¤ìŒ ì…€ë¶€í„° ë§ˆì§€ë§‰ ì…€ê¹Œì§€ ì°¨ì§€í•˜ê³ , 
+	      //gridheightë¥¼ GridBagConstraints. RELATIVE ê°’ìœ¼ë¡œ ì„¤ì •í•˜ë©´ í˜„ì¬ ì—´ì˜ ë‹¤ìŒ ì…€ë¶€í„° ë§ˆì§€ë§‰ ì…€ê¹Œì§€ ì°¨ì§€í•˜ë„ë¡ í•©ë‹ˆë‹¤.
+	      
+	      gbl.setConstraints(c, gbc); //ì»´í¬ë„ŒíŠ¸ë¥¼ ì»´í¬ë„ŒíŠ¸ ìœ„ì¹˜+í¬ê¸° ì •ë³´ì— ë”°ë¼ GridBagLayoutì— ë°°ì¹˜
+	 
+	      add(c);
+
+	   }
 	@Override
 	public void actionPerformed (ActionEvent event){
 		
 			if(event.getSource() == jbutton_makeNewSale ){
-				System.out.println("makenewSale ¹öÆ°ÀÌ ´­·¯ º¼û´Ï´Ù");
-			//ÄÁÆ®·Ñ·¯¿¡°Ô ¸Ş½ÃÁö Àü´Ş
+				System.out.println("makenewSale ë²„íŠ¼ì´ ëˆŒëŸ¬ï¿½ë³¼æ…§æ±‚ï¿½");
+			//ì»¨íŠ¸ë¡¤ëŸ¬ì—ê²Œ ë©”ì‹œì§€ ì „ë‹¬
 				sale = register.makeNewSale();
 			}	
 			else if(event.getSource() == jbutton_enterItem){
 
-				System.out.println("enterItem ¹öÆ°ÀÌ ´­·¯ º¼û´Ï´Ù");;
+				System.out.println("enterItem ë²„íŠ¼ì´ ëˆŒëŸ¬ï¿½ë³¼æ…§æ±‚ï¿½");;
 				register.enterItem(
 						new ItemID(Integer.parseInt(jTextFiel_itemID.getText())) 
 								, Integer.parseInt(jTextFiel_quantiy.getText())
@@ -109,20 +203,20 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 				jTextFiel_itemID.setText("");
 				jTextFiel_quantiy.setText("");
 				
-				jTextFiel_total.setText("" + sale.getTotal());
+				//jTextFiel_total.setText("" + sale.getTotal());
 			}
 			else if(event.getSource() == jbutton_endSale){
-				System.out.println("endSale ¹öÆ°ÀÌ ´­·¯ º¼û´Ï´Ù");;
-				//ÄÁÆ®·Ñ·¯¿¡°Ô ¸Ş½ÃÁö Àü´Ş
+				System.out.println("endSale ë²„íŠ¼ì´ ëˆŒëŸ¬ï¿½ë³¼æ…§æ±‚ï¿½");;
+				//ì»¨íŠ¸ë¡¤ëŸ¬ì—ê²Œ ë©”ì‹œì§€ ì „ë‹¬
 				register.endSale();
 				
 			}
 			else if(event.getSource() == jbutton_makePayment){
-				System.out.println("makePayment ¹öÆ°ÀÌ ´­·¯ º¼û´Ï´Ù");;
-				//°í°´ÀÌ ³½ µ· ¾ò±â + ÄÁÆ®·Ñ·¯¿¡°Ô Àü´Ş
-				register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
+				System.out.println("makePayment ë²„íŠ¼ì´ ëˆŒëŸ¬ï¿½ë³¼æ…§æ±‚ï¿½");;
+				//ê³ ê°ì´ ë‚¸ ëˆ ì–»ê¸° + ì»¨íŠ¸ë¡¤ëŸ¬ì—ê²Œ ì „ë‹¬
+			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
 				
-				//ÀÜ¾× Ç¥½ÃÇÏ±â
+				//ì”ì•¡ í‘œì‹œí•˜ê¸°
 				jTextFiel_balance.setText(sale.getBalance().toString());
 
 	

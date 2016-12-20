@@ -10,7 +10,7 @@ import POS_final.domainLayer.tax.GoodAsGoldTaxProAdapter;
 import POS_final.domainLayer.tax.ITaxCalculatorAdapter;
 import POS_final.domainLayer.tax.TaxMasterAdapter;
 import POS_final.presentaionLayer.*;
-
+import POS_final.domainLayer.*;
 //import POS_final.*;
 
 public class Main {
