@@ -13,8 +13,10 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -35,7 +37,15 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	//1. for makenewSale()
 	private JButton jbutton_makeNewSale = new JButton("1. makeNewSale");
 	private JLabel jLabel_itemId = new JLabel("item id: ");
-	private JTextField jTextFiel_itemID = new JTextField();
+	
+// JCombobox쓰는 법
+//	//Create the combo box, select item at index 4.
+//	//Indices start at 0, so 4 specifies the pig.
+//	JComboBox petList = new JComboBox(idStrings);
+//	petList.setSelectedIndex(4);
+//	petList.addActionListener(this);
+	String[] idStrings = { "100", "200", "300", "400", "500" };
+	private JComboBox jComboBox_itemID = new JComboBox(idStrings);
 	private JLabel jLabel_quantiy = new JLabel("quantity: ");
 	private JTextField jTextFiel_quantiy = new JTextField();
 	private JLabel jLabel_description = new JLabel("description: ");
@@ -94,22 +104,25 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
         gbc.fill = GridBagConstraints.HORIZONTAL;
        
         setTitle("POS System ( 학번 : 20141311 이름 : 유정인 ) ");
-		
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 		//레이아웃매니저 지정
         setLayout(gbl);
 		
 		//GUI컴넌트 속성 지정
-		jTextFiel_itemID.setPreferredSize(new Dimension(60,20));
+        jComboBox_itemID.setPreferredSize(new Dimension(60,20));
 		jTextFiel_quantiy.setPreferredSize(new Dimension(60,20));
 		jTextFiel_description.setPreferredSize(new Dimension(60,20));
+		jTextFiel_description.setEditable(false);
 		jTextFiel_currentTotal.setPreferredSize(new Dimension(60,20));
+		jTextFiel_currentTotal.setEditable(false);
 		jTextFiel_total_with_tax.setPreferredSize(new Dimension(60,20));
-		jTextFiel_currentTotal.setPreferredSize(new Dimension(60,20));
-		jTextFiel_total_with_tax.setPreferredSize(new Dimension(60,20));
+		jTextFiel_total_with_tax.setEditable(false);
 		jTextFiel_total_after_discount.setPreferredSize(new Dimension(60,20));
+		jTextFiel_total_after_discount.setEditable(false);
 		jTextFiel_amount.setPreferredSize(new Dimension(60,20));
 		jTextFiel_balance.setPreferredSize(new Dimension(60,20));
-		jTextFiel_balance.setPreferredSize(new Dimension(60,20));
+		jTextFiel_balance.setEditable(false);
 		jTextarea_window.setPreferredSize(new Dimension (200,400));
 
 		
@@ -124,7 +137,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	
 		gbAdd(gbl, gbc, jbutton_makeNewSale, 1, 0, 2, 1);
 		gbAdd(gbl, gbc, jLabel_itemId, 2, 0, 1, 1);
-		gbAdd(gbl, gbc, jTextFiel_itemID, 2, 1, 1, 1);
+		gbAdd(gbl, gbc, jComboBox_itemID, 2, 1, 1, 1);
 		gbAdd(gbl, gbc, jLabel_quantiy, 3, 0, 1, 1);
 		gbAdd(gbl, gbc, jTextFiel_quantiy, 3, 1, 1, 1);
 		gbAdd(gbl, gbc, jLabel_description, 4, 0, 1, 1);
@@ -168,8 +181,70 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 		jbutton_makePayment.addActionListener(this);
 	}
 	
-	 private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int x, int y, int w, int h) {
 
+	@Override
+	public void actionPerformed (ActionEvent event){
+		
+			if(event.getSource() == jbutton_makeNewSale ){
+				System.out.println("makenewSale 버튼이 눌러졌습니다.");
+			//컨트롤러에게 메시지 전달
+				sale = register.makeNewSale();
+			}	
+			else if(event.getSource() == jbutton_enterItem){
+
+				System.out.println("enterItem 버튼이 눌러졌습니다");
+				String str_quantity = jTextFiel_quantiy.getText();
+				if(str_quantity.length() != 0){
+					try{
+						Integer.parseInt(str_quantity);
+					}
+					catch(NumberFormatException nfe){
+						JOptionPane.showMessageDialog(this, "숫자만을 입력해 주세요.");
+						jTextFiel_quantiy.setText("");
+					}
+				}
+				
+				register.enterItem(
+						new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())) 
+								, Integer.parseInt(jTextFiel_quantiy.getText())
+						);
+				
+				jTextFiel_quantiy.setText("");
+				
+				//jTextFiel_total.setText("" + sale.getTotal());
+			}
+			else if(event.getSource() == jbutton_endSale){
+				System.out.println("endSale 버튼이 눌러졌습니다");
+				//컨트롤러에게 메시지 전달
+				register.endSale();
+				
+			}
+			else if(event.getSource() == jbutton_calcuateTax){
+				System.out.println("calcuateTax 버튼이 눌러졌습니다");
+				//컨트롤러에게 메시지 전달
+			
+				
+			}
+			else if(event.getSource() == jbutton_applyDiscount){
+				System.out.println("applyDiscount 버튼이 눌러졌습니다");
+				//컨트롤러에게 메시지 전달
+			
+				
+			}
+			else if(event.getSource() == jbutton_makePayment){
+				System.out.println("makePayment 버튼이  눌러졌습니다");
+				//고객이 낸 돈 얻기 + 컨트롤러에게 전달
+			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
+				
+				//잔액 표시하기
+				jTextFiel_balance.setText(sale.getBalance().toString());
+
+	
+			}
+			
+		}
+	//gridBagLayout 추가하는 함수
+	 private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int x, int y, int w, int h) {
 	      gbc.gridy = x;
 	      gbc.gridx = y; 
 	      //가장 왼쪽 위 gridx, gridy값은 0 
@@ -185,42 +260,4 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	      add(c);
 
 	   }
-	@Override
-	public void actionPerformed (ActionEvent event){
-		
-			if(event.getSource() == jbutton_makeNewSale ){
-				System.out.println("makenewSale 버튼이 눌러�볼慧求�");
-			//컨트롤러에게 메시지 전달
-				sale = register.makeNewSale();
-			}	
-			else if(event.getSource() == jbutton_enterItem){
-
-				System.out.println("enterItem 버튼이 눌러�볼慧求�");;
-				register.enterItem(
-						new ItemID(Integer.parseInt(jTextFiel_itemID.getText())) 
-								, Integer.parseInt(jTextFiel_quantiy.getText())
-						);
-				jTextFiel_itemID.setText("");
-				jTextFiel_quantiy.setText("");
-				
-				//jTextFiel_total.setText("" + sale.getTotal());
-			}
-			else if(event.getSource() == jbutton_endSale){
-				System.out.println("endSale 버튼이 눌러�볼慧求�");;
-				//컨트롤러에게 메시지 전달
-				register.endSale();
-				
-			}
-			else if(event.getSource() == jbutton_makePayment){
-				System.out.println("makePayment 버튼이 눌러�볼慧求�");;
-				//고객이 낸 돈 얻기 + 컨트롤러에게 전달
-			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
-				
-				//잔액 표시하기
-				jTextFiel_balance.setText(sale.getBalance().toString());
-
-	
-			}
-			
-		}
 }
