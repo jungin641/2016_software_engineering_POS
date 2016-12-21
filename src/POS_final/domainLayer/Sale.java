@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Sale {
 	private List<SalesLineItem> lineItems = new ArrayList<SalesLineItem>();
-	private Date date = new Date(); //ÇöÀç ½Ã°¢
+	private Date date = new Date(); //í˜„ì¬ ì‹œê°
 	private boolean isComplete = false;
 	private Payment payment;
 	
-	public Money getBalance(){ //?”?ˆ 
+	public Money getBalance(){ //?ï¿½ï¿½?ï¿½ï¿½ 
 		return payment.getAmount().minus(getTotal());
 	}
 	public void becomeComplete(){
@@ -31,7 +31,6 @@ public class Sale {
 		for(SalesLineItem lineItem : lineItems){
 			subtotal = lineItem.getSubtotal();
 			total.add(subtotal);
-			
 		}
 		return total;
 	}

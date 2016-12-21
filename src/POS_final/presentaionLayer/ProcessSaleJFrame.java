@@ -38,6 +38,9 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	
 	//현재 판매 객체
 	private Sale sale;
+	private ProductCatalog pc = new ProductCatalog();
+	
+	
 	//GUI컴퓨넌트 선언
 	
 	
@@ -188,10 +191,114 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 		jbutton_calcuateTax.addActionListener(this);
 		jbutton_applyDiscount.addActionListener(this);
 		jbutton_makePayment.addActionListener(this);
-		
+		jComboBox_itemID.addActionListener(this);
+		jradioButton_goodAsGoldTaxPro.addActionListener(this);
+		jradioButton_taxMaster.addActionListener(this);
 		controlGUIs(MAKE_NEW_SALE);
 		
 	}
+	
+	@Override
+	public void actionPerformed (ActionEvent event){
+		
+			if(event.getSource() == jbutton_makeNewSale ){
+				controlGUIs(ENTER_ITEM);
+				jTextarea_window.append("The new Sale is started\n");
+			//컨트롤러에게 메시지 전달
+				sale = register.makeNewSale();
+				
+//				ProductCatalog pc = new ProductCatalog();
+//				pc.loadIds(jComboBox_itemID); // id추가 
+				
+			}	
+			else if(event.getSource() == jComboBox_itemID){
+//				jTextFiel_description.setText(pc.getProductDescription(
+//						new ItemID(Integer.parseInt( jComboBox_itemID.getSelectedItem().toString()))).getDescription());
+			
+				jTextFiel_description.setText(
+						pc.getProductDescription( new ItemID(
+								Integer.parseInt(jComboBox_itemID.getSelectedItem().toString()))).getDescription());
+			}
+			else if(event.getSource() == jbutton_enterItem){
+				controlGUIs(END_SALE);
+				jTextarea_window.append("A Item is entered.\n");
+				String str_quantity = jTextFiel_quantiy.getText();
+				if(str_quantity.length() != 0){
+					try{
+						Integer.parseInt(str_quantity);
+					}
+					catch(NumberFormatException nfe){
+						JOptionPane.showMessageDialog(this, "[Warning]Please insert digits only.");
+						jTextFiel_quantiy.setText("");
+					}
+				}
+				
+				jTextFiel_description.setText("");
+				register.enterItem(new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())) 
+						, Integer.parseInt(jTextFiel_quantiy.getText()));
+				
+				jTextFiel_quantiy.setText("");
+				jTextFiel_currentTotal.setText("" + sale.getTotal());
+			}
+			else if(event.getSource() == jbutton_endSale){
+				controlGUIs(CALCULATE_TAX);
+				jTextarea_window.append("The sale is ended.\n");
+				//컨트롤러에게 메시지 전달
+				register.endSale();
+				
+			}
+			else if(event.getSource() == jradioButton_goodAsGoldTaxPro){
+				System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.GoodAsGoldTaxProAdapter"); 
+
+			}
+			else if(event.getSource() == jradioButton_taxMaster){
+				System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.TaxMasterAdapter"); 
+			}
+			
+			else if(event.getSource() == jbutton_calcuateTax){
+				controlGUIs(APPLY_DISCOUNT);
+				jTextarea_window.append("Tax is calculated.\n");
+				//컨트롤러에게 메시지 전달
+				jTextFiel_total_with_tax.setText(register.calculateTax().toString());
+				
+			}
+			else if(event.getSource() == jbutton_applyDiscount){
+				controlGUIs(MAKE_PAYMENT);
+				jTextarea_window.append("Discount percent is applied.\n");
+				//컨트롤러에게 메시지 전달
+			
+				
+			}
+			else if(event.getSource() == jbutton_makePayment){
+				controlGUIs(MAKE_NEW_SALE);
+				jTextarea_window.append("makePayment button is clicked.\n");
+				//고객이 낸 돈 얻기 + 컨트롤러에게 전달
+			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
+				
+				//잔액 표시하기
+				jTextFiel_balance.setText(sale.getBalance().toString());
+
+	
+			}
+			
+		}
+	//gridBagLayout 추가하는 함수
+	 private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int x, int y, int w, int h) {
+	      gbc.gridy = x;
+	      gbc.gridx = y; 
+	      //가장 왼쪽 위 gridx, gridy값은 0 
+	      gbc.gridwidth  = w;	//넓이
+	      gbc.gridheight = h;	//높이
+	      //gridwidth를 GridBagConstraints.REMAINDER 값으로 설정하면 현재 행의 마지막 셀이되고, 
+	      //gridheight를 GridBagConstraints.REMAINDER 값으로 설정하면 현재 열의 마지막 셀이됩니다. 
+	      //gridwidth를 GridBagConstraints. RELATIVE 값으로 설정하면 현재 행의 다음 셀부터 마지막 셀까지 차지하고, 
+	      //gridheight를 GridBagConstraints. RELATIVE 값으로 설정하면 현재 열의 다음 셀부터 마지막 셀까지 차지하도록 합니다.
+	      
+	      gbl.setConstraints(c, gbc); //컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치
+	 
+	      add(c);
+
+	   }
 	 private  void controlGUIs(int status){
 		 if(status == MAKE_NEW_SALE){
 			 jbutton_makeNewSale.setEnabled(true);
@@ -287,98 +394,5 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 			 
 	 }
 
-	@Override
-	public void actionPerformed (ActionEvent event){
-		
-			if(event.getSource() == jbutton_makeNewSale ){
-				controlGUIs(ENTER_ITEM);
-				jTextarea_window.append("The new Sale is started\n");
-			//컨트롤러에게 메시지 전달
-				sale = register.makeNewSale();
-//				
-//				ProductCatalog pc = new ProductCatalog();
-//				pc.loadIds(jComboBox_itemID); // id추가 
-				
-		
-			
-
-			}	
-			else if(event.getSource() == jbutton_enterItem){
-				controlGUIs(END_SALE);
-				jTextarea_window.append("A Item is entered.\n");
-				String str_quantity = jTextFiel_quantiy.getText();
-				if(str_quantity.length() != 0){
-					try{
-						Integer.parseInt(str_quantity);
-					}
-					catch(NumberFormatException nfe){
-						JOptionPane.showMessageDialog(this, "[Warning]Please insert digits only.");
-						jTextFiel_quantiy.setText("");
-					}
-				}
-				
-				jTextFiel_description.setText("");
-				register.enterItem(
-						new ItemID(
-								Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())
-								) 
-						, Integer.parseInt(jTextFiel_quantiy.getText())
-						);
-				
-				jTextFiel_quantiy.setText("");
-				
-				//jTextFiel_total.setText("" + sale.getTotal());
-			}
-			else if(event.getSource() == jbutton_endSale){
-				controlGUIs(CALCULATE_TAX);
-				jTextarea_window.append("The sale is ended.\n");
-				//컨트롤러에게 메시지 전달
-				register.endSale();
-				
-			}
-			else if(event.getSource() == jbutton_calcuateTax){
-				controlGUIs(APPLY_DISCOUNT);
-				jTextarea_window.append("Tax is calculated.\n");
-				//컨트롤러에게 메시지 전달
-			
-				
-			}
-			else if(event.getSource() == jbutton_applyDiscount){
-				controlGUIs(MAKE_PAYMENT);
-				jTextarea_window.append("Discount percent is applied.\n");
-				//컨트롤러에게 메시지 전달
-			
-				
-			}
-			else if(event.getSource() == jbutton_makePayment){
-				controlGUIs(MAKE_NEW_SALE);
-				jTextarea_window.append("makePayment button is clicked.\n");
-				//고객이 낸 돈 얻기 + 컨트롤러에게 전달
-			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
-				
-				//잔액 표시하기
-				jTextFiel_balance.setText(sale.getBalance().toString());
-
-	
-			}
-			
-		}
-	//gridBagLayout 추가하는 함수
-	 private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int x, int y, int w, int h) {
-	      gbc.gridy = x;
-	      gbc.gridx = y; 
-	      //가장 왼쪽 위 gridx, gridy값은 0 
-	      gbc.gridwidth  = w;	//넓이
-	      gbc.gridheight = h;	//높이
-	      //gridwidth를 GridBagConstraints.REMAINDER 값으로 설정하면 현재 행의 마지막 셀이되고, 
-	      //gridheight를 GridBagConstraints.REMAINDER 값으로 설정하면 현재 열의 마지막 셀이됩니다. 
-	      //gridwidth를 GridBagConstraints. RELATIVE 값으로 설정하면 현재 행의 다음 셀부터 마지막 셀까지 차지하고, 
-	      //gridheight를 GridBagConstraints. RELATIVE 값으로 설정하면 현재 열의 다음 셀부터 마지막 셀까지 차지하도록 합니다.
-	      
-	      gbl.setConstraints(c, gbc); //컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치
-	 
-	      add(c);
-
-	   }
 	
 }

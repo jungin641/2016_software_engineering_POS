@@ -20,6 +20,10 @@ public class Money {
 	
 		return new Money(amount * number);
 	}
+	public Money times(double number){
+		
+		return new Money((int) (amount * number));
+	}
 	public Money minus(Money money) {
 		
 		return new Money(this.amount - money.getAmout()) ;

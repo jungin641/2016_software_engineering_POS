@@ -4,7 +4,7 @@ import POS_final.domainLayer.Money;
 import POS_final.domainLayer.Register;
 import POS_final.domainLayer.Sale;
 import POS_final.domainLayer.Store;
-import POS_final.domainLayer.factory.ServicesFactory;
+import POS_final.domainLayer.factory.ServicesFactory_j;
 import POS_final.domainLayer.pricing.*;
 import POS_final.domainLayer.tax.GoodAsGoldTaxProAdapter;
 import POS_final.domainLayer.tax.ITaxCalculatorAdapter;
@@ -47,7 +47,7 @@ public class Main {
 		// taxCalculator = (new ServicesFactory()).getTaxCalculatorAdapter();
 		// ServicesFactory 객체를 생성
 		// new ServicesFactory(); 얘 못함
-		ServicesFactory factory = ServicesFactory.getInstance();
+		ServicesFactory_j factory = ServicesFactory_j.getInstance();
 
 		// 세금 계산 요청 (세금계산기 종류에 상관 없음)
 		taxCalculator.getTaxes(s);

@@ -19,6 +19,7 @@ public class ProductCatalog {
 	private ResultSet myResultSet;
 	
 	public ProductCatalog(){
+		 loadProdSpecs();
 	}
 //	public ProductCatalog(String databaseDriver, String databaseURL){
 //		// DB연결한 생성자
