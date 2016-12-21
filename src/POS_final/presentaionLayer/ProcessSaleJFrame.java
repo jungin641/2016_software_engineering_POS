@@ -62,9 +62,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	private ButtonGroup buttonGroup_tax = new ButtonGroup();
 	private JRadioButton jradioButton_taxMaster = new JRadioButton("TaxMaster", false);
 	private JRadioButton jradioButton_goodAsGoldTaxPro = new JRadioButton("GoodAsGoldTaxPro", false);
-//	buttonGroup_tax.add(jradioButton_goodAsGoldTaxPro);
-//	buttonGroup_tax.add(jradioButton_taxMaster);
-	
+
 	//4. for calculateTax()
 	private JButton jbutton_calcuateTax = new JButton("4. calcuateTax()");
 	private JLabel jLabel_total_with_tax = new JLabel("Total with Tax: "); //세금 계산한 총
@@ -72,8 +70,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	private JRadioButton jradioButton_bestForCustomer = new JRadioButton("BestForCustomer", false);
 	private JRadioButton jradioButton_bestForStore = new JRadioButton("BestForStore", false);
 	private ButtonGroup buttonGroup_discount = new ButtonGroup();
-//	buttonGroup_discount.add(jradioButton_bestForCustomer);
-//	buttonGroup_discount.add(jradioButton_bestForStore);
+	
 	
 	//5. for applyDiscount()
 	private JButton jbutton_applyDiscount = new JButton("5. applyDiscount()");
@@ -123,12 +120,17 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 		jTextFiel_amount.setPreferredSize(new Dimension(60,20));
 		jTextFiel_balance.setPreferredSize(new Dimension(60,20));
 		jTextFiel_balance.setEditable(false);
-		jTextarea_window.setPreferredSize(new Dimension (200,400));
+		jTextarea_window.setPreferredSize(new Dimension (230,400));
 
+		//라디오버튼 그룹 지
+		buttonGroup_discount.add(jradioButton_bestForCustomer);
+		buttonGroup_discount.add(jradioButton_bestForStore);
+		buttonGroup_tax.add(jradioButton_goodAsGoldTaxPro);
+		buttonGroup_tax.add(jradioButton_taxMaster);
 		
 		//JTextArea 속성 지정
 
-		jTextarea_window.setText("Please click makeNewSale.");
+		jTextarea_window.setText("Please click makeNewSale.\n");
 		jTextarea_window.setBorder(BorderFactory.createLoweredBevelBorder()); 
 		jTextarea_window.setEditable(false); // 편집불가능하게 함
 
@@ -186,20 +188,20 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	public void actionPerformed (ActionEvent event){
 		
 			if(event.getSource() == jbutton_makeNewSale ){
-				System.out.println("makenewSale 버튼이 눌러졌습니다.");
+				jTextarea_window.append("The new Sale is started\n");
 			//컨트롤러에게 메시지 전달
 				sale = register.makeNewSale();
 			}	
 			else if(event.getSource() == jbutton_enterItem){
 
-				System.out.println("enterItem 버튼이 눌러졌습니다");
+				jTextarea_window.append("A Item is entered.\n");
 				String str_quantity = jTextFiel_quantiy.getText();
 				if(str_quantity.length() != 0){
 					try{
 						Integer.parseInt(str_quantity);
 					}
 					catch(NumberFormatException nfe){
-						JOptionPane.showMessageDialog(this, "숫자만을 입력해 주세요.");
+						JOptionPane.showMessageDialog(this, "[Warning]Please insert digits only.");
 						jTextFiel_quantiy.setText("");
 					}
 				}
@@ -214,25 +216,25 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 				//jTextFiel_total.setText("" + sale.getTotal());
 			}
 			else if(event.getSource() == jbutton_endSale){
-				System.out.println("endSale 버튼이 눌러졌습니다");
+				jTextarea_window.append("The sale is ended.\n");
 				//컨트롤러에게 메시지 전달
 				register.endSale();
 				
 			}
 			else if(event.getSource() == jbutton_calcuateTax){
-				System.out.println("calcuateTax 버튼이 눌러졌습니다");
+				jTextarea_window.append("Tax is calculated.\n");
 				//컨트롤러에게 메시지 전달
 			
 				
 			}
 			else if(event.getSource() == jbutton_applyDiscount){
-				System.out.println("applyDiscount 버튼이 눌러졌습니다");
+				jTextarea_window.append("Discount percent is applied.\n");
 				//컨트롤러에게 메시지 전달
 			
 				
 			}
 			else if(event.getSource() == jbutton_makePayment){
-				System.out.println("makePayment 버튼이  눌러졌습니다");
+				jTextarea_window.append("makePayment button is clicked.\n");
 				//고객이 낸 돈 얻기 + 컨트롤러에게 전달
 			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
 				
