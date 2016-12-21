@@ -26,6 +26,13 @@ import POS_final.domainLayer.*;
 
 public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	private static final Insets insets = new Insets(0, 0, 0, 0);
+	private static final int MAKE_NEW_SALE = 0; //단계적 활성화용 작업 단계 상수 지정
+	private static final int ENTER_ITEM = 1;
+	private static final int END_SALE = 2;
+	private static final int CALCULATE_TAX = 3;
+	private static final int APPLY_DISCOUNT = 4;
+	private static final int MAKE_PAYMENT = 5;
+	
 	//컨트롤러
 	private Register register;
 	
@@ -181,19 +188,116 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 		jbutton_calcuateTax.addActionListener(this);
 		jbutton_applyDiscount.addActionListener(this);
 		jbutton_makePayment.addActionListener(this);
+		
+		controlGUIs(MAKE_NEW_SALE);
+		
 	}
-	
+	 private  void controlGUIs(int status){
+		 if(status == MAKE_NEW_SALE){
+			 jbutton_makeNewSale.setEnabled(true);
+			 jComboBox_itemID.setEnabled(false);
+			 jTextFiel_quantiy.setEditable(false);
+			 jbutton_enterItem.setEnabled(false);
+			 jbutton_endSale.setEnabled(false);
+			 jradioButton_taxMaster.setEnabled(false);
+			 jradioButton_goodAsGoldTaxPro.setEnabled(false);
+			 jbutton_calcuateTax.setEnabled(false);
+			 jradioButton_bestForCustomer.setEnabled(false);
+			 jradioButton_bestForStore.setEnabled(false);
+			 jbutton_applyDiscount.setEnabled(false);
+			 jTextFiel_amount.setEnabled(false);
+			 jbutton_makePayment.setEnabled(false);
+		 }
+		 else if (status == ENTER_ITEM){
+			 jbutton_makeNewSale.setEnabled(false);
+			 jComboBox_itemID.setEnabled(true);
+			 jTextFiel_quantiy.setEditable(true);
+			 jbutton_enterItem.setEnabled(true);
+			 jbutton_endSale.setEnabled(false);
+			 jradioButton_taxMaster.setEnabled(false);
+			 jradioButton_goodAsGoldTaxPro.setEnabled(false);
+			 jbutton_calcuateTax.setEnabled(false);
+			 jradioButton_bestForCustomer.setEnabled(false);
+			 jradioButton_bestForStore.setEnabled(false);
+			 jbutton_applyDiscount.setEnabled(false);
+			 jTextFiel_amount.setEnabled(false);
+			 jbutton_makePayment.setEnabled(false);
+		 }
+		 else if (status == END_SALE){
+			 jbutton_makeNewSale.setEnabled(false);
+			 jComboBox_itemID.setEnabled(false);
+			 jTextFiel_quantiy.setEditable(false);
+			 jbutton_enterItem.setEnabled(false);
+			 jbutton_endSale.setEnabled(true);
+			 jradioButton_taxMaster.setEnabled(false);
+			 jradioButton_goodAsGoldTaxPro.setEnabled(false);
+			 jbutton_calcuateTax.setEnabled(false);
+			 jradioButton_bestForCustomer.setEnabled(false);
+			 jradioButton_bestForStore.setEnabled(false);
+			 jbutton_applyDiscount.setEnabled(false);
+			 jTextFiel_amount.setEnabled(false);
+			 jbutton_makePayment.setEnabled(false);
+		 }
+		 else if (status == CALCULATE_TAX){
+			 jbutton_makeNewSale.setEnabled(false);
+			 jComboBox_itemID.setEnabled(false);
+			 jTextFiel_quantiy.setEditable(false);
+			 jbutton_enterItem.setEnabled(false);
+			 jbutton_endSale.setEnabled(false);
+			 jradioButton_taxMaster.setEnabled(true);
+			 jradioButton_goodAsGoldTaxPro.setEnabled(true);
+			 jbutton_calcuateTax.setEnabled(true);
+			 jradioButton_bestForCustomer.setEnabled(false);
+			 jradioButton_bestForStore.setEnabled(false);
+			 jbutton_applyDiscount.setEnabled(false);
+			 jTextFiel_amount.setEnabled(false);
+			 jbutton_makePayment.setEnabled(false);
+		 }
+		 else if (status == APPLY_DISCOUNT){
+			 jbutton_makeNewSale.setEnabled(false);
+			 jComboBox_itemID.setEnabled(false);
+			 jTextFiel_quantiy.setEditable(false);
+			 jbutton_enterItem.setEnabled(false);
+			 jbutton_endSale.setEnabled(false);
+			 jradioButton_taxMaster.setEnabled(false);
+			 jradioButton_goodAsGoldTaxPro.setEnabled(false);
+			 jbutton_calcuateTax.setEnabled(false);
+			 jradioButton_bestForCustomer.setEnabled(true);
+			 jradioButton_bestForStore.setEnabled(true);
+			 jbutton_applyDiscount.setEnabled(true);
+			 jTextFiel_amount.setEnabled(false);
+			 jbutton_makePayment.setEnabled(false);
+		 }
+		 else if (status == MAKE_PAYMENT){
+			 jbutton_makeNewSale.setEnabled(false);
+			 jComboBox_itemID.setEnabled(false);
+			 jTextFiel_quantiy.setEditable(false);
+			 jbutton_enterItem.setEnabled(false);
+			 jbutton_endSale.setEnabled(false);
+			 jradioButton_taxMaster.setEnabled(false);
+			 jradioButton_goodAsGoldTaxPro.setEnabled(false);
+			 jbutton_calcuateTax.setEnabled(false);
+			 jradioButton_bestForCustomer.setEnabled(false);
+			 jradioButton_bestForStore.setEnabled(false);
+			 jbutton_applyDiscount.setEnabled(false);
+			 jTextFiel_amount.setEnabled(true);
+			 jbutton_makePayment.setEnabled(true);
+		 }
+		 
+			 
+	 }
 
 	@Override
 	public void actionPerformed (ActionEvent event){
 		
 			if(event.getSource() == jbutton_makeNewSale ){
+				controlGUIs(ENTER_ITEM);
 				jTextarea_window.append("The new Sale is started\n");
 			//컨트롤러에게 메시지 전달
 				sale = register.makeNewSale();
 			}	
 			else if(event.getSource() == jbutton_enterItem){
-
+				controlGUIs(END_SALE);
 				jTextarea_window.append("A Item is entered.\n");
 				String str_quantity = jTextFiel_quantiy.getText();
 				if(str_quantity.length() != 0){
@@ -216,24 +320,28 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 				//jTextFiel_total.setText("" + sale.getTotal());
 			}
 			else if(event.getSource() == jbutton_endSale){
+				controlGUIs(CALCULATE_TAX);
 				jTextarea_window.append("The sale is ended.\n");
 				//컨트롤러에게 메시지 전달
 				register.endSale();
 				
 			}
 			else if(event.getSource() == jbutton_calcuateTax){
+				controlGUIs(APPLY_DISCOUNT);
 				jTextarea_window.append("Tax is calculated.\n");
 				//컨트롤러에게 메시지 전달
 			
 				
 			}
 			else if(event.getSource() == jbutton_applyDiscount){
+				controlGUIs(MAKE_PAYMENT);
 				jTextarea_window.append("Discount percent is applied.\n");
 				//컨트롤러에게 메시지 전달
 			
 				
 			}
 			else if(event.getSource() == jbutton_makePayment){
+				controlGUIs(MAKE_NEW_SALE);
 				jTextarea_window.append("makePayment button is clicked.\n");
 				//고객이 낸 돈 얻기 + 컨트롤러에게 전달
 			//	register.makePayment(new Money(Integer.parseInt(jTextFiel_cash.getText())));
@@ -262,4 +370,5 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 	      add(c);
 
 	   }
+	
 }
