@@ -51,8 +51,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 //	JComboBox petList = new JComboBox(idStrings);
 //	petList.setSelectedIndex(4);
 //	petList.addActionListener(this);
-	String[] idStrings = { "100", "200", "300", "400", "500" };
-	private JComboBox jComboBox_itemID = new JComboBox(idStrings);
+	String [] idStringarray = {"100","200","300","400","500"};
+	private JComboBox jComboBox_itemID = new JComboBox(idStringarray);
 	private JLabel jLabel_quantiy = new JLabel("quantity: ");
 	private JTextField jTextFiel_quantiy = new JTextField();
 	private JLabel jLabel_description = new JLabel("description: ");
@@ -295,6 +295,13 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 				jTextarea_window.append("The new Sale is started\n");
 			//컨트롤러에게 메시지 전달
 				sale = register.makeNewSale();
+//				
+//				ProductCatalog pc = new ProductCatalog();
+//				pc.loadIds(jComboBox_itemID); // id추가 
+				
+		
+			
+
 			}	
 			else if(event.getSource() == jbutton_enterItem){
 				controlGUIs(END_SALE);
@@ -310,9 +317,12 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 					}
 				}
 				
+				jTextFiel_description.setText("");
 				register.enterItem(
-						new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())) 
-								, Integer.parseInt(jTextFiel_quantiy.getText())
+						new ItemID(
+								Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())
+								) 
+						, Integer.parseInt(jTextFiel_quantiy.getText())
 						);
 				
 				jTextFiel_quantiy.setText("");
