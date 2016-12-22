@@ -30,16 +30,19 @@ public class Register {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public Money calculateTax(){
-		Money afterCalcTax = null;
+	public Money getTotalWithTax(){
+		Money totalWithTax = new Money();
+		
 		try {
 			taxCalculatorAdapter = ServicesFactory.getInstance().getTaxCalculatorAdapter();
-			afterCalcTax = taxCalculatorAdapter.getTaxes(currentSale);
+			totalWithTax = taxCalculatorAdapter.getTaxes(currentSale);
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			
 			e.printStackTrace();
 		}
-		return afterCalcTax;
+		currentSale.setTotal(totalWithTax);
+		return totalWithTax;
+		
 	}
 	
 }

@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import POS_final.domainLayer.factory.ServicesFactory;
+import POS_final.domainLayer.tax.ITaxCalculatorAdapter;
+
 public class Sale {
 	private List<SalesLineItem> lineItems = new ArrayList<SalesLineItem>();
 	private Date date = new Date(); //현재 시각
 	private boolean isComplete = false;
 	private Payment payment;
+	private Money total;
 	
 	public Money getBalance(){ //?��?�� 
 		return payment.getAmount().minus(getTotal());
@@ -32,11 +36,19 @@ public class Sale {
 			subtotal = lineItem.getSubtotal();
 			total.add(subtotal);
 		}
+		this.total = total;
 		return total;
+	}
+	public void setTotal(Money total){
+		this.total = total;
+	}
+	public Money getCurrentTotal(){
+		return this.total;
 	}
 	
 	public void makePayment(Money cashTendered){
 		payment  = new Payment(cashTendered);
 	}
+	
 }
 

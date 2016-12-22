@@ -259,9 +259,17 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 				controlGUIs(APPLY_DISCOUNT);
 				jTextarea_window.append("Tax is calculated.\n");
 				//컨트롤러에게 메시지 전달
-				jTextFiel_total_with_tax.setText(register.calculateTax().toString());
+				jTextFiel_total_with_tax.setText(register.getTotalWithTax().toString());
 				
 			}
+			
+//			else if(event.getSource() == jradioButton_bestForCustomer){
+//				System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.pricing.CompositeBestForCustomerPricingStrategy"); 
+//
+//			}
+//			else if(event.getSource() == jradioButton_bestForStore){
+//				System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.pricing.CompositeBestForStorePricingStrategy"); 
+//			}
 			else if(event.getSource() == jbutton_applyDiscount){
 				controlGUIs(MAKE_PAYMENT);
 				jTextarea_window.append("Discount percent is applied.\n");
@@ -320,7 +328,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener{
 			 jComboBox_itemID.setEnabled(true);
 			 jTextFiel_quantiy.setEditable(true);
 			 jbutton_enterItem.setEnabled(true);
-			 jbutton_endSale.setEnabled(false);
+			 jbutton_endSale.setEnabled(true);
 			 jradioButton_taxMaster.setEnabled(false);
 			 jradioButton_goodAsGoldTaxPro.setEnabled(false);
 			 jbutton_calcuateTax.setEnabled(false);

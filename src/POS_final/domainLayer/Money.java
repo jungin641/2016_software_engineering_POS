@@ -36,4 +36,10 @@ public class Money {
 		this.amount += money.getAmout();
 		
 	}
+	public boolean isBiggerThan(Money money){
+		if (this.amount > money.getAmout())
+			return true;
+		else
+			return false;
+	}
 }

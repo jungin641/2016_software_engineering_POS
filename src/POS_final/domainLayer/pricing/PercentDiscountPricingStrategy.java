@@ -18,7 +18,7 @@ public class PercentDiscountPricingStrategy implements ISalePricingStrategy {
 	@Override
 	public Money getTotal(Sale s) {
 		// TODO Auto-generated method stub
-		return null;
+		return s.getCurrentTotal().times(percentage);
 	}
 
 }
