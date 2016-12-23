@@ -22,18 +22,14 @@ public class Main {
 
 		// 컨트롤러를 GUI에게 전달
 		new ProcessSaleJFrame(register);
-
-		// 생성할 세금계산기 어댑터 종류를시스템 속성을 이용하여 지정
-		System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.GoodAsGoldTaxProAdapter");
-
-		Sale s = register.makeNewSale();
+		
 		// System.setProperty("taxcalculator.class.name", "TaxMasterAdapter");
 
 		// System - > 자바 프로그램이 실행되는 환경
 
 		// 세금계산기 이용
 		// ***부모타입의 변수는,여러 종류의 자식 타입의 객체를 가리킬 수 있다.
-		ITaxCalculatorAdapter taxCalculator;
+//		ITaxCalculatorAdapter taxCalculator;
 
 		// 26.4절 : 어떤 종류의 세금계산기를 생성할지 결정해야함
 		// => factory 클래스에게 맡기자
@@ -41,23 +37,18 @@ public class Main {
 		// taxCalculator = new TaxMasterAdapter();
 		//
 		// // 2)Gold 세금계산기 이용시
-		 taxCalculator = new GoodAsGoldTaxProAdapter();
+//		 taxCalculator = new GoodAsGoldTaxProAdapter();
 
 		// 세금계산기 어댑터 생성을 ServicesFactory에게 부탁
 		// taxCalculator = (new ServicesFactory()).getTaxCalculatorAdapter();
 		// ServicesFactory 객체를 생성
 		// new ServicesFactory(); 얘 못함
-		ServicesFactory_j factory = ServicesFactory_j.getInstance();
-
-		// 세금 계산 요청 (세금계산기 종류에 상관 없음)
-		taxCalculator.getTaxes(s);
+//		ServicesFactory_j factory = ServicesFactory_j.getInstance();
+//
+//		// 세금 계산 요청 (세금계산기 종류에 상관 없음)
+//		taxCalculator.getTaxes(s);
+//		
 		
-		// 가격 할인
-		ISalePricingStrategy pricing;
-		//오늘이 10프로 할인해주는 날이다!
-		pricing = (ISalePricingStrategy) new PercentDiscountPricingStrategy(0.1);
-		//오늘이 십만원 넘으면 5천원 할인해주는 날이다!!
-		pricing = (ISalePricingStrategy) new AbsoluteDiscountOverThresholdPricingStrategy(new Money(100000), new Money (5000));
 		
 	}
 

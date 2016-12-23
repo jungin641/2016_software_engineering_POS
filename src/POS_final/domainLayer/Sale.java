@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import POS_final.domainLayer.factory.PricingStrategyFactory;
 import POS_final.domainLayer.factory.ServicesFactory;
+import POS_final.domainLayer.pricing.CompositePricingStrategy;
+import POS_final.domainLayer.pricing.ISalePricingStrategy;
 import POS_final.domainLayer.tax.ITaxCalculatorAdapter;
 
 public class Sale {
@@ -13,7 +16,11 @@ public class Sale {
 	private boolean isComplete = false;
 	private Payment payment;
 	private Money total;
+	private ISalePricingStrategy pricingStrategy;
 	
+	public void Sale(){
+		
+	}
 	public Money getBalance(){ //?��?�� 
 		return payment.getAmount().minus(getTotal());
 	}
@@ -49,6 +56,24 @@ public class Sale {
 	public void makePayment(Money cashTendered){
 		payment  = new Payment(cashTendered);
 	}
-	
+	public Money applyDiscount(){ 
+		Money totalAfterDiscount = new Money();
+		pricingStrategy = PricingStrategyFactory.getInstance().getSalePricingStrategy();
+		System.out.println(pricingStrategy+"pricingStrategy");
+		totalAfterDiscount = pricingStrategy.getTotal(this);
+		System.out.println(totalAfterDiscount+"totalAfterDiscount");
+		return totalAfterDiscount;
+		
+	}
+//	Money totalWithTax = new Money();
+//	try {
+//		taxCalculatorAdapter = ServicesFactory.getInstance().getTaxCalculatorAdapter();
+//		totalWithTax = taxCalculatorAdapter.getTaxes(currentSale);
+//	} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+//		e.printStackTrace();
+//	}
+//	currentSale.setTotal(totalWithTax);
+//	return totalWithTax;
+
 }
 

@@ -14,7 +14,6 @@ public class AbsoluteDiscountOverThresholdPricingStrategy implements ISalePricin
 
 
 	public AbsoluteDiscountOverThresholdPricingStrategy(Money threshold, Money discount) {
-		
 		this.threshold = threshold;
 		this.discount = discount;
 	}

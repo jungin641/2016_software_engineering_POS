@@ -42,4 +42,20 @@ public class Money {
 		else
 			return false;
 	}
+	public Money min(Money lowestTotal) {
+		if (this.amount <= lowestTotal.getAmout())
+			return this;
+		else if (this.amount > lowestTotal.getAmout())
+			return lowestTotal;
+		else	
+			return null;
+	}
+	public Money max(Money highestTotal) {
+		if (this.amount <= highestTotal.getAmout())
+			return highestTotal;
+		else if (this.amount > highestTotal.getAmout())
+			return this;
+		else 
+			return null;
+	}
 }

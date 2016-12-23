@@ -17,7 +17,7 @@ public class ServicesFactory {
 	//이 메소드가 호출되면 이 때 자신의 객체를 만든다.
 	//여러 스레드가 동시에 이 메소드를 호출하는 경우, 
 	// 한 스레드만 이 메소드 안으로 들어오게 해야 한다. -> Syncronized로 해결
-	static public synchronized ServicesFactory getInstance(){
+	public static synchronized ServicesFactory getInstance(){
 		if(instance == null){ //이 메소드가 처음 호출되었으면...
 			//ServicesFactory 생성 전에 무언가 할 수 있다~
 			instance = new ServicesFactory();
