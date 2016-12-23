@@ -22,7 +22,7 @@ public class Sale {
 		
 	}
 	public Money getBalance(){ //?��?�� 
-		return payment.getAmount().minus(getTotal());
+		return payment.getAmount().minus(applyDiscount());
 	}
 	public void becomeComplete(){
 		isComplete = true;

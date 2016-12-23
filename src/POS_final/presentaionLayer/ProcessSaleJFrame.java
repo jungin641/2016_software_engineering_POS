@@ -276,8 +276,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 			controlGUIs(MAKE_NEW_SALE);
 			jTextarea_window.append("makePayment button is clicked.\n");
 			// 고객이 낸 돈 얻기 + 컨트롤러에게 전달
-			// register.makePayment(new
-			// Money(Integer.parseInt(jTextFiel_cash.getText())));
+			 register.makePayment(new
+			 Money(Integer.parseInt(jTextFiel_amount.getText())));
 
 			// 잔액 표시하기
 			jTextFiel_balance.setText(sale.getBalance().toString());
