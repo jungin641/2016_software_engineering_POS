@@ -307,7 +307,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 	}
 
 	private void controlGUIs(int status) {
-		if (status == MAKE_NEW_SALE) {
+		if (status == MAKE_NEW_SALE) {			
 			jbutton_makeNewSale.setEnabled(true);
 			jComboBox_itemID.setEnabled(false);
 			jTextFiel_quantiy.setEditable(false);
@@ -322,6 +322,17 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 			jTextFiel_amount.setEnabled(false);
 			jbutton_makePayment.setEnabled(false);
 		} else if (status == ENTER_ITEM) {
+			//이전 주문 gui필드들 초기화
+			jTextFiel_currentTotal.setText("");
+			jradioButton_taxMaster.setSelected(false);
+			jradioButton_goodAsGoldTaxPro.setSelected(false);
+			jradioButton_bestForCustomer.setSelected(false);
+			jradioButton_bestForStore.setSelected(false);
+			jTextFiel_total_with_tax.setText("");
+			jTextFiel_total_after_discount.setText("");
+			jTextFiel_amount.setText("");
+			jTextFiel_balance.setText("");
+			
 			jbutton_makeNewSale.setEnabled(false);
 			jComboBox_itemID.setEnabled(true);
 			jTextFiel_quantiy.setEditable(true);
