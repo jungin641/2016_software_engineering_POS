@@ -9,6 +9,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -21,9 +25,10 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import POS_final.PropertyListener;
 import POS_final.domainLayer.*;
 
-public class ProcessSaleJFrame extends JFrame implements ActionListener {
+public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemListener,PropertyListener  {
 	private static final Insets insets = new Insets(0, 0, 0, 0);
 	private static final int MAKE_NEW_SALE = 0; // 단계적 활성화용 작업 단계 상수 지정
 	private static final int ENTER_ITEM = 1;
@@ -45,12 +50,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 	private JButton jbutton_makeNewSale = new JButton("1. makeNewSale");
 	private JLabel jLabel_itemId = new JLabel("item id: ");
 
-	// JCombobox쓰는 법
-	// //Create the combo box, select item at index 4.
-	// //Indices start at 0, so 4 specifies the pig.
-	// JComboBox petList = new JComboBox(idStrings);
-	// petList.setSelectedIndex(4);
-	// petList.addActionListener(this);
+	
 	String[] idStringarray = { "100", "200", "300", "400", "500" };
 	private JComboBox jComboBox_itemID = new JComboBox(idStringarray);
 	private JLabel jLabel_quantiy = new JLabel("quantity: ");
@@ -60,8 +60,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 
 	// 2. for enterItem()
 	private JButton jbutton_enterItem = new JButton("2. enterItem() (반복)");
-	private JLabel jLabel_currentTotal = new JLabel("Current Total: "); // 세금
-																		// 계산한 총
+	private JLabel jLabel_currentTotal = new JLabel("Current Total: "); 
+																		
 	private JTextField jTextFiel_currentTotal = new JTextField();
 
 	// 3. for endSale()
@@ -187,10 +187,10 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 		jbutton_applyDiscount.addActionListener(this);
 		jbutton_makePayment.addActionListener(this);
 		jComboBox_itemID.addActionListener(this);
-		jradioButton_goodAsGoldTaxPro.addActionListener(this);
-		jradioButton_taxMaster.addActionListener(this);
-		jradioButton_bestForCustomer.addActionListener(this);
-		jradioButton_bestForStore.addActionListener(this);
+		jradioButton_goodAsGoldTaxPro.addItemListener(this);
+		jradioButton_taxMaster.addItemListener(this);
+		jradioButton_bestForCustomer.addItemListener(this);
+		jradioButton_bestForStore.addItemListener(this);
 		
 		controlGUIs(MAKE_NEW_SALE);
 
@@ -204,7 +204,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 			jTextarea_window.append("The new Sale is started\n");
 			// 컨트롤러에게 메시지 전달
 			sale = register.makeNewSale();
-
+			sale.addPropertyListener(this);
+			
 			// ProductCatalog pc = new ProductCatalog();
 			// pc.loadIds(jComboBox_itemID); // id추가
 
@@ -217,7 +218,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 					.getProductDescription(new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())))
 					.getDescription());
 		} else if (event.getSource() == jbutton_enterItem) {
-			controlGUIs(END_SALE);
+			
 			jTextarea_window.append("A Item is entered.\n");
 			String str_quantity = jTextFiel_quantiy.getText();
 			if (str_quantity.length() != 0) {
@@ -230,23 +231,18 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 				}
 			}
 
-			jTextFiel_description.setText("");
+		
 			register.enterItem(new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())),
 					Integer.parseInt(jTextFiel_quantiy.getText()));
-
+			jTextFiel_description.setText("");
 			jTextFiel_quantiy.setText("");
-			jTextFiel_currentTotal.setText("" + sale.getTotal());
+			sale.setTotal(sale.getTotal());
 		} else if (event.getSource() == jbutton_endSale) {
 			controlGUIs(CALCULATE_TAX);
 			jTextarea_window.append("The sale is ended.\n");
 			// 컨트롤러에게 메시지 전달
 			register.endSale();
 
-		} else if (event.getSource() == jradioButton_goodAsGoldTaxPro) {
-			System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.GoodAsGoldTaxProAdapter");
-
-		} else if (event.getSource() == jradioButton_taxMaster) {
-			System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.TaxMasterAdapter");
 		}
 
 		else if (event.getSource() == jbutton_calcuateTax) {
@@ -255,13 +251,6 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 			// 컨트롤러에게 메시지 전달
 			jTextFiel_total_with_tax.setText(register.getTotalWithTax().toString());
 
-		}
-
-		else if (event.getSource() == jradioButton_bestForCustomer) {
-			register.getPricingStrategyFactory().setPricingStrategyType(1);
-			
-		} else if (event.getSource() == jradioButton_bestForStore) {
-			register.getPricingStrategyFactory().setPricingStrategyType(2);
 		}
 
 		else if (event.getSource() == jbutton_applyDiscount) {
@@ -283,23 +272,39 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 		}
 
 	}
+	@Override
+	public void itemStateChanged(ItemEvent event) {
+		// TODO Auto-generated method stub
+			if (event.getSource() == jradioButton_goodAsGoldTaxPro) {
+				System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.GoodAsGoldTaxProAdapter");
+
+			} else if (event.getSource() == jradioButton_taxMaster) {
+				System.setProperty("taxcalculator.class.name", "POS_final.domainLayer.tax.TaxMasterAdapter");
+			}
+			else if (event.getSource() == jradioButton_bestForCustomer) {
+				register.getPricingStrategyFactory().setPricingStrategyType(1);
+				
+			} else if (event.getSource() == jradioButton_bestForStore) {
+				register.getPricingStrategyFactory().setPricingStrategyType(2);
+			}
+
+	}
+
+	@Override
+	public void onPropertyEvent(Sale source, String name, Money value) {
+		if ( name.equals("sale.total") )
+			jTextFiel_currentTotal.setText( value.toString() );
+	}
 
 	// gridBagLayout 추가하는 함수
-	private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int x, int y, int w, int h) {
-		gbc.gridy = x;
-		gbc.gridx = y;
+	private void gbAdd(GridBagLayout gbl, GridBagConstraints gbc, Component c, int y,int x, int w, int h) {
+		gbc.gridy = y;
+		gbc.gridx = x;
 		// 가장 왼쪽 위 gridx, gridy값은 0
 		gbc.gridwidth = w; // 넓이
 		gbc.gridheight = h; // 높이
-		// gridwidth를 GridBagConstraints.REMAINDER 값으로 설정하면 현재 행의 마지막 셀이되고,
-		// gridheight를 GridBagConstraints.REMAINDER 값으로 설정하면 현재 열의 마지막 셀이됩니다.
-		// gridwidth를 GridBagConstraints. RELATIVE 값으로 설정하면 현재 행의 다음 셀부터 마지막 셀까지
-		// 차지하고,
-		// gridheight를 GridBagConstraints. RELATIVE 값으로 설정하면 현재 열의 다음 셀부터 마지막
-		// 셀까지 차지하도록 합니다.
 
 		gbl.setConstraints(c, gbc); // 컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치
-
 		add(c);
 
 	}
@@ -344,20 +349,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 			jbutton_applyDiscount.setEnabled(false);
 			jTextFiel_amount.setEnabled(false);
 			jbutton_makePayment.setEnabled(false);
-		} else if (status == END_SALE) {
-			jbutton_makeNewSale.setEnabled(false);
-			jComboBox_itemID.setEnabled(false);
-			jTextFiel_quantiy.setEditable(false);
-			jbutton_enterItem.setEnabled(false);
-			jbutton_endSale.setEnabled(true);
-			jradioButton_taxMaster.setEnabled(false);
-			jradioButton_goodAsGoldTaxPro.setEnabled(false);
-			jbutton_calcuateTax.setEnabled(false);
-			jradioButton_bestForCustomer.setEnabled(false);
-			jradioButton_bestForStore.setEnabled(false);
-			jbutton_applyDiscount.setEnabled(false);
-			jTextFiel_amount.setEnabled(false);
-			jbutton_makePayment.setEnabled(false);
+		
 		} else if (status == CALCULATE_TAX) {
 			jbutton_makeNewSale.setEnabled(false);
 			jComboBox_itemID.setEnabled(false);
@@ -403,5 +395,7 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 		}
 
 	}
+
+	
 
 }

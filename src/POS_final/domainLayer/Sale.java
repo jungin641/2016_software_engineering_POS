@@ -1,9 +1,11 @@
 package POS_final.domainLayer;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import POS_final.PropertyListener;
 import POS_final.domainLayer.factory.PricingStrategyFactory;
 import POS_final.domainLayer.factory.ServicesFactory;
 import POS_final.domainLayer.pricing.CompositePricingStrategy;
@@ -17,7 +19,7 @@ public class Sale {
 	private Payment payment;
 	private Money total;
 	private ISalePricingStrategy pricingStrategy;
-	
+	private List<PropertyListener> propertylisteners = new ArrayList<PropertyListener>();
 	public void Sale(){
 		
 	}
@@ -44,13 +46,18 @@ public class Sale {
 			total.add(subtotal);
 		}
 		this.total = total;
+		publishPropertyEvent("sale.total", total);
 		return total;
 	}
-	public void setTotal(Money total){
-		this.total = total;
+	public void setTotal(Money newTotal){
+		this.total = newTotal;
+		publishPropertyEvent("sale.total", newTotal);
 	}
 	public Money getCurrentTotal(){
 		return this.total;
+	}
+	public void setTotalWithTax(Money total){
+		this.total = total;
 	}
 	
 	public void makePayment(Money cashTendered){
@@ -63,15 +70,14 @@ public class Sale {
 		return totalAfterDiscount;
 		
 	}
-//	Money totalWithTax = new Money();
-//	try {
-//		taxCalculatorAdapter = ServicesFactory.getInstance().getTaxCalculatorAdapter();
-//		totalWithTax = taxCalculatorAdapter.getTaxes(currentSale);
-//	} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-//		e.printStackTrace();
-//	}
-//	currentSale.setTotal(totalWithTax);
-//	return totalWithTax;
+	public void addPropertyListener( PropertyListener lis ){
+		propertylisteners.add( lis );
+	}
+	public void publishPropertyEvent(String name ,Money value ){
+		for (PropertyListener pl : propertylisteners){
+			pl.onPropertyEvent( this, name, value );
+		}
+	}
 
 }
 

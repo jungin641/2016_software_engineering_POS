@@ -28,10 +28,6 @@ public class Register {
 	public void makePayment(Money cashTendered){
 		currentSale.makePayment(cashTendered);
 	}
-	public int getBalance() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	public Money getTotalWithTax(){
 		Money totalWithTax = new Money();
 		try {
@@ -40,7 +36,7 @@ public class Register {
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		currentSale.setTotal(totalWithTax);
+		currentSale.setTotalWithTax(totalWithTax);
 		return totalWithTax;
 	}
 	public PricingStrategyFactory getPricingStrategyFactory(){
