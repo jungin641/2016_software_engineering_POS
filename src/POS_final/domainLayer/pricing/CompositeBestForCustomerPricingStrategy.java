@@ -20,11 +20,9 @@ public class CompositeBestForCustomerPricingStrategy extends CompositePricingStr
 		for (Iterator i = getPricingStrategies().iterator(); i.hasNext();) {
 			ISalePricingStrategy strategy = (ISalePricingStrategy) i.next();
 			Money total = strategy.getTotal(s);
-			System.out.println(total+"total");
 			lowestTotal = total.min(lowestTotal);
 		
 		}
-		System.out.println(lowestTotal+"lowestTotal");
 		return lowestTotal;
 	}
 }

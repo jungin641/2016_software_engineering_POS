@@ -259,11 +259,9 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener {
 
 		else if (event.getSource() == jradioButton_bestForCustomer) {
 			register.getPricingStrategyFactory().setPricingStrategyType(1);
-			System.out.println(register.getPricingStrategyFactory()+"kmmk");
 			
 		} else if (event.getSource() == jradioButton_bestForStore) {
 			register.getPricingStrategyFactory().setPricingStrategyType(2);
-			System.out.println(register.getPricingStrategyFactory()+"kmmk");
 		}
 
 		else if (event.getSource() == jbutton_applyDiscount) {

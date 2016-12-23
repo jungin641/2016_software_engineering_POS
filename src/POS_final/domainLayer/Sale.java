@@ -59,9 +59,7 @@ public class Sale {
 	public Money applyDiscount(){ 
 		Money totalAfterDiscount = new Money();
 		pricingStrategy = PricingStrategyFactory.getInstance().getSalePricingStrategy();
-		System.out.println(pricingStrategy+"pricingStrategy");
 		totalAfterDiscount = pricingStrategy.getTotal(this);
-		System.out.println(totalAfterDiscount+"totalAfterDiscount");
 		return totalAfterDiscount;
 		
 	}
