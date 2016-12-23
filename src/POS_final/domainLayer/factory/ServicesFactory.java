@@ -6,7 +6,7 @@ import POS_final.domainLayer.tax.TaxMasterAdapter;
 
 //객체 생성 전문 클래스
 public class ServicesFactory {
-	private static ITaxCalculatorAdapter taxAdapter;
+	private  ITaxCalculatorAdapter taxAdapter;
 //미리 자신의 객체를 만들어 놓지 않음 (소극적 초기화)
 	static ServicesFactory instance;
 	//생성자를 private로 해줌
@@ -30,8 +30,8 @@ public class ServicesFactory {
 	
 	//세금계산기 어댑터를 생성해서 반환하는 메소드
 	//세금계산기 어댑터를 생성해서 반환하는 메소드
-		 public static synchronized ITaxCalculatorAdapter getTaxCalculatorAdapter( ) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-			 if ( taxAdapter == null ){
+		 public ITaxCalculatorAdapter getTaxCalculatorAdapter( ) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		
 			//강의노트 26장 13페이지
 			 //생성할 세금계산기 클래스 이름을  다른 곳에서 지정했다면 
 			 //이것을 이용해서 세금계산기 어댑터를 생성하자!!
@@ -39,7 +39,7 @@ public class ServicesFactory {
 			 String className = System.getProperty("taxcalculator.class.name");
 			 //className을 이용하여 세금계산기 어댑터를 생성
 			 taxAdapter = (ITaxCalculatorAdapter) Class.forName(className).newInstance();
-			 }
+		
 			 return taxAdapter;
 		}
 		
