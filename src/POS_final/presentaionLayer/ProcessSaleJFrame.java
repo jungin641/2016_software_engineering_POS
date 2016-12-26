@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -25,21 +24,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import POS_final.PropertyListener;
 import POS_final.domainLayer.*;
 
 public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemListener,PropertyListener  {
-	private static final Insets insets = new Insets(0, 0, 0, 0);
 	private static final int MAKE_NEW_SALE = 0; // 단계적 활성화용 작업 단계 상수 지정
 	private static final int ENTER_ITEM = 1;
 	private static final int END_SALE = 2;
 	private static final int CALCULATE_TAX = 3;
 	private static final int APPLY_DISCOUNT = 4;
 	private static final int MAKE_PAYMENT = 5;
-
+	
 	// 컨트롤러
 	private Register register;
 
@@ -54,8 +56,6 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 	// 1. for makenewSale()
 	private JButton jbutton_makeNewSale = new JButton("1. makeNewSale");
 	private JLabel jLabel_itemId = new JLabel("item id: ");
-
-	
 	private JComboBox jComboBox_itemID = new JComboBox();
 	private JLabel jLabel_quantiy = new JLabel("quantity: ");
 	private JTextField jTextFiel_quantiy = new JTextField();
@@ -86,11 +86,9 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 
 	// 5. for applyDiscount()
 	private JButton jbutton_applyDiscount = new JButton("5. applyDiscount()");
-	private JLabel jLabel_total_after_discount = new JLabel("Total after Discount: "); // 세금
-																						// 계산한
-																						// 총
+	private JLabel jLabel_total_after_discount = new JLabel("Total after Discount: "); 
 	private JTextField jTextFiel_total_after_discount = new JTextField();
-	private JLabel jLabel_amount = new JLabel("Amount: "); // 세금 계산한 총
+	private JLabel jLabel_amount = new JLabel("Amount: ");
 	private JTextField jTextFiel_amount = new JTextField();
 
 	// 6. for makePayment()
@@ -98,14 +96,30 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 	private JLabel jLabel_balance = new JLabel("balance: "); // 잔돈
 	private JTextField jTextFiel_balance = new JTextField();
 
+	// for User Interface
 	private JTextArea jTextarea_window = new JTextArea();
-
+	private JScrollPane jTextareaPane = new JScrollPane(jTextarea_window);
+	//headers for the table
+    String[] columns = new String[] {
+        "품목", "개수", "가격"
+    };
+     
+    //actual data for the table in a 2d array
+    Object[][] dataForJtable = new Object[][] {
+        {"판매시작", "", "" }
+     
+    };
+    DefaultTableModel model = new DefaultTableModel(dataForJtable, columns);
+    private JTable jTable_lineItems = new JTable( model );
+    private JScrollPane jtablePane =  new JScrollPane(jTable_lineItems);
+	
+	
 	// 생성자
 	public ProcessSaleJFrame(Register register) {
 		this.register = register;
 		initGUI();
 		pack(); // GUI 컴포넌트 정리
-		setSize(600, 550);
+		setSize(700, 550);
 		setVisible(true);
 	}
 
@@ -113,14 +127,14 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-
+		
 		setTitle("POS System ( 학번 : 20141311 이름 : 유정인 ) ");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// 레이아웃매니저 지정
 		setLayout(gbl);
 
-		// GUI컴넌트 속성 지정
+		// GUI컴포넌트 속성 지정
 		jComboBox_itemID.setPreferredSize(new Dimension(60, 20));
 		jTextFiel_quantiy.setPreferredSize(new Dimension(60, 20));
 		jTextFiel_description.setPreferredSize(new Dimension(60, 20));
@@ -134,20 +148,23 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 		jTextFiel_amount.setPreferredSize(new Dimension(60, 20));
 		jTextFiel_balance.setPreferredSize(new Dimension(60, 20));
 		jTextFiel_balance.setEditable(false);
-		jTextarea_window.setPreferredSize(new Dimension(230, 400));
-
-		// 라디오버튼 그룹 지
+		jTextareaPane.setPreferredSize(new Dimension(300, 180));
+		jtablePane.setPreferredSize(new Dimension(300, 180));
+		
+		// 라디오버튼 그룹 지정
 		buttonGroup_discount.add(jradioButton_bestForCustomer);
 		buttonGroup_discount.add(jradioButton_bestForStore);
 		buttonGroup_tax.add(jradioButton_goodAsGoldTaxPro);
 		buttonGroup_tax.add(jradioButton_taxMaster);
 
 		// JTextArea 속성 지정
-
-		jTextarea_window.setText("Please click makeNewSale.\n");
+		jTextarea_window.setText("판매 시작하기 버튼을 눌러 주세요.\n");
 		jTextarea_window.setBorder(BorderFactory.createLoweredBevelBorder());
 		jTextarea_window.setEditable(false); // 편집불가능하게 함
 
+		
+		
+		
 		// GUI컴퓨넌트 추가
 
 		gbAdd(gbl, gbc, jbutton_makeNewSale, 1, 0, 2, 1);
@@ -180,8 +197,10 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 		gbAdd(gbl, gbc, jbutton_makePayment, 15, 0, 2, 1);
 		gbAdd(gbl, gbc, jLabel_balance, 16, 0, 1, 1);
 		gbAdd(gbl, gbc, jTextFiel_balance, 16, 1, 1, 1);
+		gbAdd(gbl, gbc, jTextareaPane,1, 2, 1, 7);
+		gbAdd(gbl, gbc, jtablePane,8, 2, 1, 9);
+	
 
-		gbAdd(gbl, gbc, jTextarea_window, 1, 2, 3, 16);
 
 		
 		// 리스너 등록
@@ -215,41 +234,62 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 
 		if (event.getSource() == jbutton_makeNewSale) {
 			controlGUIs(ENTER_ITEM);
-			jTextarea_window.append("The new Sale is started\n");
+			jTextarea_window.setText("");
+			model.setNumRows(1);
+			jTextarea_window.append("새 판매가 시작되었습니다.\n");
+			jTextarea_window.setCaretPosition(jTextarea_window.getDocument().getLength()); 
+			
 			// 컨트롤러에게 메시지 전달
 			sale = register.makeNewSale();
 			sale.addPropertyListener(this);
 			
-			// ProductCatalog pc = new ProductCatalog();
-			// pc.loadIds(jComboBox_itemID); // id추가
-
 		}else if (event.getSource() == jComboBox_itemID) {
 			
 			jTextFiel_description.setText(items.get(jComboBox_itemID.getSelectedItem()).getDescription().toString());
 	
 		} else if (event.getSource() == jbutton_enterItem) {
-			
-			jTextarea_window.append("A Item is entered.\n");
+	
 			String str_quantity = jTextFiel_quantiy.getText();
 			if (str_quantity.length() != 0) {
 				try {
 					Integer.parseInt(str_quantity);
 				} catch (NumberFormatException nfe) {
-					JOptionPane.showMessageDialog(this, "[Warning]Please insert digits only.");
+					JOptionPane.showMessageDialog(this, "[Warning]숫자만을 입력해 주세요.");
 					jTextFiel_quantiy.setText("");
 					controlGUIs(ENTER_ITEM);
 				}
 			}
-
-		
-			register.enterItem(new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString())),
-					Integer.parseInt(jTextFiel_quantiy.getText()));
+			if (str_quantity.length() == 0) {
+				try {
+					Integer.parseInt(str_quantity);
+				} catch (NumberFormatException nfe) {
+					JOptionPane.showMessageDialog(this, "[Warning]수량을 입력해 주세요.");
+					controlGUIs(ENTER_ITEM);
+				}
+			}
+			
+			ItemID selectedItemId = new ItemID(Integer.parseInt(jComboBox_itemID.getSelectedItem().toString()));
+			int selectedItemQuantity = Integer.parseInt(jTextFiel_quantiy.getText());
+				
+			register.enterItem(selectedItemId,selectedItemQuantity);
 			jTextFiel_description.setText("");
 			jTextFiel_quantiy.setText("");
+			
+			
+			String itemname = items.get(selectedItemId.toString()).getDescription();
+			int quantity = selectedItemQuantity;
+			String price = items.get(selectedItemId.toString()).getPrice().toString();
+			
+			model.insertRow(1, new Object[]{itemname,quantity+"",price});
+			jTable_lineItems.updateUI();
+			jTextarea_window.append(itemname+" "+quantity+"개가 입력되었습니다\n");
+			jTextarea_window.setCaretPosition(jTextarea_window.getDocument().getLength()); 
+			
 			sale.setTotal(sale.getTotal());
 		} else if (event.getSource() == jbutton_endSale) {
 			controlGUIs(CALCULATE_TAX);
-			jTextarea_window.append("The sale is ended.\n");
+			jTextarea_window.append("판매가 종료되었습니다.\n");
+			jTextarea_window.setCaretPosition(jTextarea_window.getDocument().getLength()); 
 			// 컨트롤러에게 메시지 전달
 			register.endSale();
 
@@ -257,7 +297,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 
 		else if (event.getSource() == jbutton_calcuateTax) {
 			controlGUIs(APPLY_DISCOUNT);
-			jTextarea_window.append("Tax is calculated.\n");
+			jTextarea_window.append("세금 포함된 가격이 계산되었습니다..\n");
+			jTextarea_window.setCaretPosition(jTextarea_window.getDocument().getLength()); 
 			// 컨트롤러에게 메시지 전달
 			jTextFiel_total_with_tax.setText(register.getTotalWithTax().toString());
 
@@ -265,20 +306,33 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 
 		else if (event.getSource() == jbutton_applyDiscount) {
 			controlGUIs(MAKE_PAYMENT);
-			jTextarea_window.append("Discount percent is applied.\n");
+			jTextarea_window.append("할인이 적용되었습니다.\n");
+			jTextarea_window.setCaretPosition(jTextarea_window.getDocument().getLength()); 
 			// 컨트롤러에게 메시지 전달
 			jTextFiel_total_after_discount.setText(sale.applyDiscount().toString());
 
 		} else if (event.getSource() == jbutton_makePayment) {
 			controlGUIs(MAKE_NEW_SALE);
-			jTextarea_window.append("makePayment button is clicked.\n");
+			String str_amount = jTextFiel_amount.getText();
+			
+			if (str_amount.length() != 0) {
+				try {
+					Integer.parseInt(str_amount);
+				} catch (NumberFormatException nfe) {
+					JOptionPane.showMessageDialog(this, "[Warning]숫자만을 입력해 주세요.");
+					jTextFiel_amount.setText("");
+					controlGUIs(MAKE_PAYMENT);
+				}
+			}
 			// 고객이 낸 돈 얻기 + 컨트롤러에게 전달
 			 register.makePayment(new
 			 Money(Integer.parseInt(jTextFiel_amount.getText())));
 
 			// 잔액 표시하기
 			jTextFiel_balance.setText(sale.getBalance().toString());
-
+			jTextarea_window.append("금액을 지불합니다. \n받은 돈은 "+jTextFiel_amount.getText()+"원 잔돈은 "+sale.getBalance().toString()+"원입니다.\n");
+			jTextarea_window.setCaretPosition(jTextarea_window.getDocument().getLength()); 
+			
 		}
 
 	}
@@ -335,6 +389,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 			jbutton_applyDiscount.setEnabled(false);
 			jTextFiel_amount.setEnabled(false);
 			jbutton_makePayment.setEnabled(false);
+			
+			
 		} else if (status == ENTER_ITEM) {
 			//이전 주문 gui필드들 초기화
 			jTextFiel_currentTotal.setText("");

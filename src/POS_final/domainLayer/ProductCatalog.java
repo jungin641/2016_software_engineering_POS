@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.swing.JComboBox;
 
 public class ProductCatalog {
-//	private Map<ItemID, ProductDescription> descriptions = new HashMap<ItemID,ProductDescription>();
 	private Map<String, ProductDescription> descriptions = new HashMap<String,ProductDescription>();
 	// 데이터베이스 접근하기 위한 변수
 	private Connection myConnection;
@@ -67,7 +66,7 @@ public class ProductCatalog {
 	}
 
 	public Map<String, ProductDescription> getItemsDescriptions() {
-		// TODO Auto-generated method stub
+		
 		return descriptions;
 	}
 }
