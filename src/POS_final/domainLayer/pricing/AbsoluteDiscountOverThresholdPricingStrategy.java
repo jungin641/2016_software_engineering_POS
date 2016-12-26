@@ -14,15 +14,16 @@ public class AbsoluteDiscountOverThresholdPricingStrategy implements ISalePricin
 
 
 	public AbsoluteDiscountOverThresholdPricingStrategy(Money threshold, Money discount) {
-		
 		this.threshold = threshold;
 		this.discount = discount;
 	}
 
 	@Override
 	public Money getTotal(Sale s) {
-		// TODO Auto-generated method stub
-		return null;
+		if(s.getCurrentTotal().isBiggerThan(threshold))
+			return s.getCurrentTotal().minus(discount);
+		else
+			return s.getCurrentTotal();
 	}
 
 }

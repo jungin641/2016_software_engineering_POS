@@ -20,6 +20,10 @@ public class Money {
 	
 		return new Money(amount * number);
 	}
+	public Money times(double number){
+		
+		return new Money((int) (amount * number));
+	}
 	public Money minus(Money money) {
 		
 		return new Money(this.amount - money.getAmout()) ;
@@ -31,5 +35,27 @@ public class Money {
 	public void add(Money money) {
 		this.amount += money.getAmout();
 		
+	}
+	public boolean isBiggerThan(Money money){
+		if (this.amount > money.getAmout())
+			return true;
+		else
+			return false;
+	}
+	public Money min(Money lowestTotal) {
+		if (this.amount <= lowestTotal.getAmout())
+			return this;
+		else if (this.amount > lowestTotal.getAmout())
+			return lowestTotal;
+		else	
+			return null;
+	}
+	public Money max(Money highestTotal) {
+		if (this.amount <= highestTotal.getAmout())
+			return highestTotal;
+		else if (this.amount > highestTotal.getAmout())
+			return this;
+		else 
+			return null;
 	}
 }

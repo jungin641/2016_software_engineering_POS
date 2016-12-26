@@ -9,7 +9,7 @@ import POS_final.domainLayer.tax.ITaxCalculatorAdapter;
 public class PercentDiscountPricingStrategy implements ISalePricingStrategy {
 	//할인율
 	private double percentage = 0;
-	
+
 	//생성자
 	public PercentDiscountPricingStrategy(double percentage) {
 		this.percentage = percentage;
@@ -18,7 +18,7 @@ public class PercentDiscountPricingStrategy implements ISalePricingStrategy {
 	@Override
 	public Money getTotal(Sale s) {
 		// TODO Auto-generated method stub
-		return null;
+		return s.getCurrentTotal().times(1-percentage);
 	}
 
 }

@@ -1,17 +1,30 @@
 package POS_final.domainLayer;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import POS_final.PropertyListener;
+import POS_final.domainLayer.factory.PricingStrategyFactory;
+import POS_final.domainLayer.factory.ServicesFactory;
+import POS_final.domainLayer.pricing.CompositePricingStrategy;
+import POS_final.domainLayer.pricing.ISalePricingStrategy;
+import POS_final.domainLayer.tax.ITaxCalculatorAdapter;
+
 public class Sale {
 	private List<SalesLineItem> lineItems = new ArrayList<SalesLineItem>();
-	private Date date = new Date(); //«ˆ¿Á Ω√∞¢
+	private Date date = new Date(); //ÌòÑÏû¨ ÏãúÍ∞Å
 	private boolean isComplete = false;
 	private Payment payment;
-	
-	public Money getBalance(){ //?ûî?èà 
-		return payment.getAmount().minus(getTotal());
+	private Money total;
+	private ISalePricingStrategy pricingStrategy;
+	private List<PropertyListener> propertylisteners = new ArrayList<PropertyListener>();
+	public void Sale(){
+		
+	}
+	public Money getBalance(){ //?ÔøΩÔøΩ?ÔøΩÔøΩ 
+		return payment.getAmount().minus(applyDiscount());
 	}
 	public void becomeComplete(){
 		isComplete = true;
@@ -31,13 +44,40 @@ public class Sale {
 		for(SalesLineItem lineItem : lineItems){
 			subtotal = lineItem.getSubtotal();
 			total.add(subtotal);
-			
 		}
+		this.total = total;
+		publishPropertyEvent("sale.total", total);
 		return total;
+	}
+	public void setTotal(Money newTotal){
+		this.total = newTotal;
+		publishPropertyEvent("sale.total", newTotal);
+	}
+	public Money getCurrentTotal(){
+		return this.total;
+	}
+	public void setTotalWithTax(Money total){
+		this.total = total;
 	}
 	
 	public void makePayment(Money cashTendered){
 		payment  = new Payment(cashTendered);
 	}
+	public Money applyDiscount(){ 
+		Money totalAfterDiscount = new Money();
+		pricingStrategy = PricingStrategyFactory.getInstance().getSalePricingStrategy();
+		totalAfterDiscount = pricingStrategy.getTotal(this);
+		return totalAfterDiscount;
+		
+	}
+	public void addPropertyListener( PropertyListener lis ){
+		propertylisteners.add( lis );
+	}
+	public void publishPropertyEvent(String name ,Money value ){
+		for (PropertyListener pl : propertylisteners){
+			pl.onPropertyEvent( this, name, value );
+		}
+	}
+
 }
 
