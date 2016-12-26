@@ -22,8 +22,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.TableColumn;
 
 import POS_final.PropertyListener;
 import POS_final.domainLayer.*;
@@ -95,13 +98,26 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 	private JTextField jTextFiel_balance = new JTextField();
 
 	private JTextArea jTextarea_window = new JTextArea();
-
+	//headers for the table
+    String[] columns = new String[] {
+        "Item", "num", "Price"
+    };
+     
+    //actual data for the table in a 2d array
+    Object[][] data = new Object[][] {
+        {"John", 40.0, false },
+        {"Rambo", 70.0, false },
+        {"Zorro", 60.0, true },
+    };
+    
+	private  JTable jTable_lineItems = new JTable(data, columns);
+	
 	// 생성자
 	public ProcessSaleJFrame(Register register) {
 		this.register = register;
 		initGUI();
 		pack(); // GUI 컴포넌트 정리
-		setSize(600, 550);
+		setSize(800, 650);
 		setVisible(true);
 	}
 
@@ -110,6 +126,8 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
+	
+		
 		setTitle("POS System ( 학번 : 20141311 이름 : 유정인 ) ");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -130,8 +148,9 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 		jTextFiel_amount.setPreferredSize(new Dimension(60, 20));
 		jTextFiel_balance.setPreferredSize(new Dimension(60, 20));
 		jTextFiel_balance.setEditable(false);
-		jTextarea_window.setPreferredSize(new Dimension(230, 400));
-
+		jTextarea_window.setPreferredSize(new Dimension(20, 170));
+		jTable_lineItems.setPreferredSize(new Dimension(20, 80));
+		
 		// 라디오버튼 그룹 지
 		buttonGroup_discount.add(jradioButton_bestForCustomer);
 		buttonGroup_discount.add(jradioButton_bestForStore);
@@ -177,8 +196,9 @@ public class ProcessSaleJFrame extends JFrame implements ActionListener,ItemList
 		gbAdd(gbl, gbc, jLabel_balance, 16, 0, 1, 1);
 		gbAdd(gbl, gbc, jTextFiel_balance, 16, 1, 1, 1);
 
-		gbAdd(gbl, gbc, jTextarea_window, 1, 2, 3, 16);
-
+		gbAdd(gbl, gbc, jTextarea_window, 0, 3, 1, 9);
+		gbAdd(gbl, gbc, new JScrollPane(jTable_lineItems), 9, 3, 1, 8);
+//int y,int x, int w, int h
 		// 리스너 등록
 		jbutton_makeNewSale.addActionListener(this);
 		jbutton_enterItem.addActionListener(this);
